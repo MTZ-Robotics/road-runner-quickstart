@@ -5,14 +5,17 @@ import static org.firstinspires.ftc.teamcode.MTZ.mtzConstants_ItD.leftClawOpenPo
 import static org.firstinspires.ftc.teamcode.MTZ.mtzConstants_ItD.rightClawClosedPosition;
 import static org.firstinspires.ftc.teamcode.MTZ.mtzConstants_ItD.rightClawOpenPosition;
 import static org.firstinspires.ftc.teamcode.MTZ.mtzConstants_ItD.ticksPerDegreeArm;
+import static org.firstinspires.ftc.teamcode.MTZ.mtzConstants_ItD.ticksPerInchExtension;
 
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
@@ -24,94 +27,205 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
-import java.io.IOException;
-
 @Config
-@Autonomous(name = "Auto2024RrTest", group = "Test")
-public class Auto2024RrTest extends LinearOpMode {
-    public class Lift {
-        private DcMotorEx lift;
-
-        public Lift(HardwareMap hardwareMap) {
-            //todo: fix the name of the lift motor and uncomment the hardwareMap line
-            lift = hardwareMap.get(DcMotorEx.class, "arm");
-            lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            lift.setDirection(DcMotorSimple.Direction.FORWARD);
+@Autonomous(name = "Auto2024RrTest_23Jan2025", group = "Test")
+public class Auto2024RrTest_23Jan2025 extends LinearOpMode {
+    public class Arm {
+        private DcMotorEx arm;
+        public int ticksToTopRail = (int) ((int) 90.0*ticksPerDegreeArm);
+        public int ticksToHumanPlayer = (int) ((int) 40.0*ticksPerDegreeArm);
+        public int ticksToEjectArm = (int) ((int) 65*ticksPerDegreeArm);
+                public Arm(HardwareMap hardwareMap) {
+            //todo: fix the name of the arm motor and uncomment the hardwareMap line
+            arm = hardwareMap.get(DcMotorEx.class, "arm");
+            arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            arm.setDirection(DcMotorSimple.Direction.FORWARD);
         }
 
-        public class LiftUp implements Action {
-
-            /*
-
-            public boolean RaiseArmByDegrees(double degrees, int pause) throws InterruptedException {
-                if (opModeIsActive()) {
-                    lift.setTargetPosition(50);
-                    lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    lift.setPower(0.8);
-                }
-                while (lift.isBusy()) {
-
-                }
-                lift.setPower(0);
-                return true;
-            }
-
-             */
-
-
-            //RaiseArmByDegrees(10,0);
+        public class ArmToRail implements Action {
             private boolean initialized = false;
 
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 if (!initialized) {
-                    lift.setPower(0.8);
+                    arm.setPower(0.8);
                     initialized = true;
                 }
 
-                double pos = lift.getCurrentPosition();
-                packet.put("liftPos", pos);
-                if (pos < 80*ticksPerDegreeArm) {
+                double pos = arm.getCurrentPosition();
+                packet.put("armPos", pos);
+                if (pos < ticksToTopRail) {
                     return true;
                 } else {
-                    lift.setPower(0);
+                    arm.setPower(0);
                     return false;
                 }
             }
 
         }
-        public Action liftUp() {
-            return new LiftUp();
-        }
-
-        public class LiftDown implements Action {
+        public class ArmToHuman implements Action {
             private boolean initialized = false;
 
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 if (!initialized) {
-                    lift.setPower(-0.8);
+                    arm.setPower(-0.8);
                     initialized = true;
                 }
 
-                double pos = lift.getCurrentPosition();
-                packet.put("liftPos", pos);
+                double pos = arm.getCurrentPosition();
+                packet.put("armPos", pos);
+                if (pos < ticksToHumanPlayer) {
+                    return true;
+                } else {
+                    arm.setPower(0);
+                    return false;
+                }
+            }
+
+        }
+        public class ArmToEject implements Action {
+            private boolean initialized = false;
+
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                if (!initialized) {
+                    arm.setPower(-0.8);
+                    initialized = true;
+                }
+
+                double pos = arm.getCurrentPosition();
+                packet.put("armPos", pos);
+                if (pos < ticksToEjectArm) {
+                    return true;
+                } else {
+                    arm.setPower(0);
+                    return false;
+                }
+            }
+
+        }
+        public Action armToRail() {
+            return new ArmToRail();
+        }
+        public Action armToHuman() {
+            return new ArmToHuman();
+        }
+        public Action armToEject() {
+            return new ArmToEject();
+        }
+
+        public class ArmDown implements Action {
+            private boolean initialized = false;
+
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                if (!initialized) {
+                    arm.setPower(-0.8);
+                    initialized = true;
+                }
+
+                double pos = arm.getCurrentPosition();
+                packet.put("armPos", pos);
                 if (pos > 0) {
                     return true;
                 } else {
-                    lift.setPower(0);
+                    arm.setPower(0);
                     return false;
                 }
             }
         }
-        public Action liftDown(){
-            return new LiftDown();
+        public Action armDown(){
+            return new ArmDown();
         }
     }
 
+    public class Extend {
+        private DcMotorEx extend;
+        public int ticksToRail = (int) ((int) 3.0*ticksPerInchExtension);
+        public int ticksToEject = (int) ((int) ticksToRail-(2.0*ticksPerInchExtension));
+        public Extend(HardwareMap hardwareMap) {
+            //todo: fix the name of the extend motor and uncomment the hardwareMap line
+            extend = hardwareMap.get(DcMotorEx.class, "armExtension");
+            extend.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            extend.setDirection(DcMotorSimple.Direction.FORWARD);
+        }
+
+        public class ExtendToRail implements Action {
+            private boolean initialized = false;
+
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                if (!initialized) {
+                    extend.setPower(0.8);
+                    initialized = true;
+                }
+
+                double pos = extend.getCurrentPosition();
+                packet.put("extendPos", pos);
+                if (pos < ticksToRail) {
+                    return true;
+                } else {
+                    extend.setPower(0);
+                    return false;
+                }
+            }
+
+        }
+        public class ExtendToEject implements Action {
+            private boolean initialized = false;
+
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                if (!initialized) {
+                    extend.setPower(-0.8);
+                    initialized = true;
+                }
+
+                double pos = extend.getCurrentPosition();
+                packet.put("extendPos", pos);
+                if (pos < ticksToEject) {
+                    return true;
+                } else {
+                    extend.setPower(0);
+                    return false;
+                }
+            }
+
+        }
+        public Action extendToRail() {
+            return new ExtendToRail();
+        }
+        public Action extendToEject() {
+            return new ExtendToEject();
+        }
+
+        public class ExtendRetract implements Action {
+            private boolean initialized = false;
+
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                if (!initialized) {
+                    extend.setPower(-0.8);
+                    initialized = true;
+                }
+
+                double pos = extend.getCurrentPosition();
+                packet.put("extendPos", pos);
+                if (pos > 0) {
+                    return true;
+                } else {
+                    extend.setPower(0);
+                    return false;
+                }
+            }
+        }
+        public Action extendRetract(){
+            return new ExtendRetract();
+        }
+    }
     public class Claw {
         private Servo leftClaw;
         private Servo rightClaw;
@@ -146,10 +260,9 @@ public class Auto2024RrTest extends LinearOpMode {
             return new OpenClaw();
         }
     }
-
-    int maxPathChoice = 3;
-    int minPathChoice = 1;
     int defaultPathToRun = 1;
+    int minPathChoice = 1;
+    int maxPathChoice = 3;
 
     @Override
     public void runOpMode() {
@@ -173,7 +286,8 @@ public class Auto2024RrTest extends LinearOpMode {
         // TODO: uncomment the hardwareMap lines when using arm and claw
  
         Claw claw = new Claw(hardwareMap);
-        Lift lift = new Lift(hardwareMap);
+        Arm arm = new Arm(hardwareMap);
+        Extend extend = new Extend(hardwareMap);
 
 
         mtzButtonBehavior pathChoiceDown = new mtzButtonBehavior();
@@ -197,99 +311,24 @@ public class Auto2024RrTest extends LinearOpMode {
 
 
         /************************************
+         *
+         * 11111111111111111111111111111111
+         *
          * Push Bot Turning Specimen Side
+         *
+         * 11111111111111111111111111111111
+         *
          ************************************/
         if (pathToRun==1) {
 
             initialPose = new Pose2d(9.5, -66, Math.toRadians(90));
-            /*
-            deliverPose = new Pose2d(6, -39, Math.toRadians(90)), Math.toRadians(90);
-            tabDeliver = drive.actionBuilder(initialPose)
-                    //Move to submersible
-                    .splineToSplineHeading(new Pose2d(6, -39, Math.toRadians(90)), Math.toRadians(90));
-            //drop off specimen
 
-            //code to drop specimen
-
-             */
             tab1 = drive.actionBuilder(initialPose)
                     //Move to submersible
+                    .waitSeconds(1)
                     .splineToSplineHeading(new Pose2d(6, -36, Math.toRadians(90)), Math.toRadians(90));
                     //drop off specimen
 
-                    //code to drop specimen
-
-                    //this one uses lots of turns
-
-                    /*.waitSeconds(1)
-                    //back away form the submersible
-                    .strafeToConstantHeading(new Vector2d(6, -45))
-                    .turnTo(Math.toRadians(0))
-                    //Move around brace of submersible
-                    .strafeToConstantHeading(new Vector2d(34, -45))
-                    .turnTo(Math.toRadians(90))
-                    //.waitSeconds(1)
-                    //move to beyond sample 1
-                    .strafeToConstantHeading(new Vector2d(34, -10.5))
-                    .turnTo(Math.toRadians(0))
-                    .strafeToConstantHeading(new Vector2d(43, -10.5))
-                    //push sample 1
-                    .turnTo(Math.toRadians(100))
-                    .strafeToConstantHeading(new Vector2d(50, -55))
-                    //return
-                    .strafeToConstantHeading(new Vector2d(34, -10.5))
-                    //slide over behind sample 2
-                    .turnTo(Math.toRadians(0))
-                    .strafeToConstantHeading(new Vector2d(53, -10.5))
-                    //.splineToSplineHeading(new Pose2d(52, -10.5, Math.toRadians(90)), Math.toRadians(0))
-                    //push sample 2
-                    .turnTo(Math.toRadians(100))
-                    .strafeToConstantHeading(new Vector2d(53, -55))
-                    //.splineToSplineHeading(new Pose2d(50, -59, Math.toRadians(120)), Math.toRadians(-45))
-                    //return
-                    .strafeToConstantHeading(new Vector2d(34, -10.5))
-                    //slide over behind sample 3
-                    .turnTo(Math.toRadians(0))
-                    .strafeToConstantHeading(new Vector2d(55, -10.5))
-                    //push sample 3
-                    .turnTo(Math.toRadians(100))
-                    .strafeToConstantHeading(new Vector2d(55, -55))
-                    .waitSeconds(3);*/
-
-                    //last tested last two x values at 63 changed them to 64 to get the bot to hit the wall
-
-                   /* .waitSeconds(1)
-                    //back away form the submersible
-                    //Move around brace of submersible
-                    .splineToConstantHeading(new Vector2d(11.7, -37.2),Math.toRadians(90))
-                    //avoid submersible
-                    .splineTo(new Vector2d(30, -37),Math.toRadians(270))
-                    //move to beyond sample 1
-                    .strafeToConstantHeading(new Vector2d(37, -18))
-                    //line up with sample 1
-                    .strafeToConstantHeading(new Vector2d(47, -18))
-                    //push sample 1
-                    .strafeToConstantHeading(new Vector2d(47, -57))
-                    //return to samples
-                    .strafeToConstantHeading(new Vector2d(48, -18))
-                    //line up with sample 2
-                    .strafeToConstantHeading(new Vector2d(50, -18))
-                    //push sample 2
-                    .splineToConstantHeading(new Vector2d(50, -57), Math.toRadians(90));
-
-
-                     Same thing as tab 2
-                    //return to samples
-                    .strafeToConstantHeading(new Vector2d(52, -18))
-                    //line up with sample 3
-                    .strafeToConstantHeading(new Vector2d(60, -18))
-                    //push sample 3
-                    .strafeToConstantHeading(new Vector2d(60, -57))
-                    //slide over behind sample 3
-                    .splineToConstantHeading(new Vector2d(55, -10.5), Math.toRadians(90))
-                    //push sample 3
-                    .strafeToConstantHeading(new Vector2d(55, -55))*/
-                    //.waitSeconds(3);
 
             tab2 = tab1.endTrajectory().fresh()
                     //.waitSeconds(1)
@@ -299,7 +338,7 @@ public class Auto2024RrTest extends LinearOpMode {
                     .strafeToConstantHeading(new Vector2d(11.7, -40))
                     //avoid submersible
                     .strafeTo(new Vector2d(37, -40))
-                    .turnTo(Math.toRadians(-90))
+                    .turnTo(Math.toRadians(270))
                     //move to beyond sample 1
                     .strafeToConstantHeading(new Vector2d(37, -18))
                     //line up with sample 1
@@ -331,9 +370,24 @@ public class Auto2024RrTest extends LinearOpMode {
                     .strafeTo(new Vector2d(50, -65));
 
         }
+
+
+
+
+
         /*********************
+         *
+         * 2222222222222222222222222
+         *
          * Push Bot Spline Net Side
+         *
+         * 222222222222222222222222
+         *
          *********************/
+
+
+
+
         else if (pathToRun==2) {
             initialPose = new Pose2d(-9, -66, Math.toRadians(90));
             tab1 = drive.actionBuilder(initialPose)
@@ -370,7 +424,11 @@ public class Auto2024RrTest extends LinearOpMode {
 
         }
         /*********************
+         *
+         * Any Other Number Path
+         *
          * Push Bot Spline Specimen Side
+         *
          *********************/
         else {
             initialPose = new Pose2d(9, -66, Math.toRadians(90));
@@ -407,32 +465,36 @@ public class Auto2024RrTest extends LinearOpMode {
                 //.strafeTo(new Vector2d(48, 12))
                 .build();
 
+        /************************
+         *
+         *    Initialize Op Mode
+         *
+         ************************/
         // actions that need to happen on init; for instance, a claw tightening.
-        //Actions.runBlocking(claw.closeClaw());
+        Actions.runBlocking(claw.closeClaw());
 
 
         while (!isStopRequested() && !opModeIsActive()) {
+            //int startPosition = visionOutputPosition;
+            pathChoiceUp.update(gamepad1.dpad_up);
+            pathChoiceUp.update(gamepad1.dpad_down);
+            if(pathChoiceDown.clickedDown){
+                pathToRun=pathToRun-1;
+            }
+            if(pathChoiceUp.clickedDown){
+                pathToRun=pathToRun+1;
+            }
+            if(pathToRun>maxPathChoice){
+                pathToRun=minPathChoice;
+            }
+            if(pathToRun<minPathChoice){
+                pathToRun=maxPathChoice;
+            }
             telemetry.addData("Path to run: ", pathToRun);
             telemetry.update();
         }
 
-        //int startPosition = visionOutputPosition;
-        pathChoiceUp.update(gamepad1.dpad_up);
-        pathChoiceUp.update(gamepad1.dpad_down);
-        if(pathChoiceDown.clickedDown){
-            pathToRun=pathToRun-1;
-        }
-        if(pathChoiceUp.clickedDown){
-            pathToRun=pathToRun+1;
-        }
-        if(pathToRun>maxPathChoice){
-            pathToRun=minPathChoice;
-        }
-        if(pathToRun<minPathChoice){
-            pathToRun=maxPathChoice;
-        }
-        telemetry.addData("Path To Run: ", pathToRun);
-        telemetry.update();
+
         waitForStart();
 
         if (isStopRequested()) return;
@@ -441,30 +503,50 @@ public class Auto2024RrTest extends LinearOpMode {
         Action trajectoryAction2;
         Action trajectoryAction3;
 
+
+        Action squeezeClaw = new SequentialAction(
+                claw.closeClaw(),
+                new SleepAction(1) //wait for claw to move
+        );
+        Action secureSpecimen = new SequentialAction(
+                extend.extendToEject(), //pull down
+                arm.armToEject(), //pull down
+                claw.openClaw(),//let go
+                new SleepAction(1) //wait for claw to move
+        );
+
+
         trajectoryAction1 = tab1.build();
+
+        assert tab2 != null;
         trajectoryAction2 = tab2.build();
         trajectoryAction3 = tab3.build();
-        /*
-        Action trajectoryDeliverSpecimen;
 
-        trajectoryDeliverSpecimen = tabDeliver.build;
-
-         */
         Actions.runBlocking(
                 new SequentialAction(
-                        //trajectoryDeliverSpecimen,
-                        claw.closeClaw(),
-                        lift.liftUp(),
-                        //waitSeconds(3),
-                        trajectoryAction1,
-                        claw.openClaw(),
-                        trajectoryAction2,
-                        lift.liftDown(),
-                        trajectoryAction3,
-                        lift.liftUp(),
-                        claw.openClaw(),
-                        lift.liftDown(),
-                        trajectoryActionCloseOut
+                        squeezeClaw, //Grab Specimen
+                        new ParallelAction( //Move to Submersible
+                                arm.armToRail(),
+                                extend.extendToRail(),
+                                trajectoryAction1
+                        ),
+                        secureSpecimen,
+                        new ParallelAction( //Move to human player
+                                trajectoryAction2,
+                                extend.extendToRail(),
+                                arm.armToHuman()
+                        ),
+                        squeezeClaw,
+                        new ParallelAction( //Move to Submersible
+                                trajectoryAction3,
+                                arm.armToRail()
+                        ),
+                        secureSpecimen,
+                        new ParallelAction(
+                                arm.armDown(),
+                                extend.extendRetract(),
+                                trajectoryActionCloseOut
+                        )
                 )
         );
     }

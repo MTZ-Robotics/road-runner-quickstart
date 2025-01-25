@@ -89,7 +89,7 @@ public class AutoControlsMTZ extends LinearOpMode {
      * Modify these speeds to help with diagnosing drive errors
      *
      **************/
-    private static final double defaultDriveSpeed = 1.0;
+    private static final double defaultDriveSpeed = 0.2;
     private static final double defaultTurnSpeed = 0.2;
     private static int defaultPauseTime = 10;
 
@@ -324,7 +324,7 @@ public class AutoControlsMTZ extends LinearOpMode {
          ******************/
 
         if (pathToRun=="default"){
-            pathToRun="Backdrop Align";
+            pathToRun="auto2024v2";
         }
 
 
@@ -429,24 +429,25 @@ public class AutoControlsMTZ extends LinearOpMode {
              * Path Start
              ************/
 
+            defaultPauseTime=100;
             RaiseArmByDegrees(85,100);
             ExtendArm(3,defaultArmExtensionPower, 100);
-            Drive(22, defaultDriveSpeed,100);
+            Drive(35, defaultDriveSpeed,defaultPauseTime);
             RaiseArmByDegrees(60,0);
             ExtendArm(1, defaultArmExtensionPower*2, 10);
             rightClaw.setPosition(rightClawOpenPosition);
             leftClaw.setPosition(leftClawOpenPosition);
             sleep(100);
-            Drive(-6,defaultDriveSpeed,100);
-            RaiseArmByDegrees(98,100);
-            Strafe(24,defaultDriveSpeed,100);
-            Drive(25,defaultDriveSpeed,100);
-            Turn(90,defaultTurnSpeed,100);
-            Drive(7,defaultDriveSpeed, 100);
-            Strafe(allianceReverser*42,defaultDriveSpeed,100);
-            Strafe(allianceReverser*-42,defaultDriveSpeed,100);
-            Drive(10,defaultDriveSpeed,100);
-            Strafe(allianceReverser*42,defaultDriveSpeed,100);
+            Drive(-6,defaultDriveSpeed,defaultPauseTime);
+            RaiseArmByDegrees(98,defaultPauseTime);
+            Strafe(22,defaultDriveSpeed,defaultPauseTime);
+            Drive(25,defaultDriveSpeed,defaultPauseTime);
+            Turn(90,defaultTurnSpeed,defaultPauseTime);
+            Drive(10,defaultDriveSpeed, defaultPauseTime);
+            Strafe(allianceReverser*42,defaultDriveSpeed,defaultPauseTime);
+            Strafe(allianceReverser*-42,defaultDriveSpeed,defaultPauseTime);
+            Drive(8,defaultDriveSpeed,defaultPauseTime);
+            Strafe(allianceReverser*42,defaultDriveSpeed,defaultPauseTime);
             /*Strafe(allianceReverser*-42,defaultDriveSpeed,1000);
             Drive(6,defaultDriveSpeed,1000);
             Drive(2,defaultDriveSpeed/2.5,1000);
@@ -519,29 +520,30 @@ public class AutoControlsMTZ extends LinearOpMode {
              * Path Start
              ************/
 
+            defaultPauseTime=1000;
             //rightClaw.setPosition(rightClawClosedPosition);
             //leftClaw.setPosition(leftClawClosedPosition);
             //sleep(200);
             RaiseArmByDegrees(85,1000);
             ExtendArm(3, defaultArmExtensionPower*4, 1000);
-            Drive(24,defaultDriveSpeed,1000);
+            Drive(24,defaultDriveSpeed,defaultPauseTime);
             RaiseArmByDegrees(-2,1000);
             ExtendArm(-.8, defaultArmExtensionPower, 1000);
             rightClaw.setPosition(rightClawOpenPosition);
             leftClaw.setPosition(leftClawOpenPosition);
-            Drive(-6,defaultDriveSpeed,1000);
-            RaiseArmByDegrees(98,1000);
-            Strafe(-24,defaultDriveSpeed,1000);
-            Drive(20,defaultDriveSpeed,1000);
-            Turn(-110,defaultTurnSpeed,1000);
-            RaiseArmByDegrees(10,1000);
-            Drive(10,defaultDriveSpeed,1000);
+            Drive(-6,defaultDriveSpeed,defaultPauseTime);
+            RaiseArmByDegrees(98,defaultPauseTime);
+            Strafe(-24,defaultDriveSpeed,defaultPauseTime);
+            Drive(20,defaultDriveSpeed,defaultPauseTime);
+            Turn(-110,defaultTurnSpeed,defaultPauseTime);
+            RaiseArmByDegrees(10,defaultPauseTime);
+            Drive(10,defaultDriveSpeed,defaultPauseTime);
             rightClaw.setPosition(rightClawClosedPosition);
             leftClaw.setPosition(leftClawClosedPosition);
-            RaiseArmByDegrees(100,1000);
-            Strafe(-36,defaultDriveSpeed,1000);
-            Drive(10,defaultDriveSpeed,1000);
-            ExtendArm(50, defaultArmExtensionPower, 1000);
+            RaiseArmByDegrees(100,defaultPauseTime);
+            Strafe(-36,defaultDriveSpeed,defaultPauseTime);
+            Drive(10,defaultDriveSpeed,defaultPauseTime);
+            ExtendArm(50, defaultArmExtensionPower, defaultPauseTime);
             rightClaw.setPosition(rightClawOpenPosition);
             leftClaw.setPosition(leftClawOpenPosition);
 
@@ -557,7 +559,7 @@ public class AutoControlsMTZ extends LinearOpMode {
              *                           Path Branch 2024
              *****************************************************************/
 
-            Logging.log("Running Path Auto 2024 V2");
+            Logging.log("Running Path Basket 2");
 
             /************************************
              * Path set up -- Add to each path
@@ -568,25 +570,26 @@ public class AutoControlsMTZ extends LinearOpMode {
             /************
              * Path Start
              ************/
+            defaultPauseTime=1000;
 
             RaiseArmByDegrees(85,1000);
             ExtendArm(3,defaultArmExtensionPower, 1000);
-            Drive(23, defaultDriveSpeed,1000);
+            Drive(23, defaultDriveSpeed,defaultPauseTime);
             RaiseArmByDegrees(65,0);
             ExtendArm(1, defaultArmExtensionPower*2, 1000);
             rightClaw.setPosition(rightClawOpenPosition);
             leftClaw.setPosition(leftClawOpenPosition);
             sleep(100);
-            Drive(-6,defaultDriveSpeed,100);
+            Drive(-6,defaultDriveSpeed,defaultPauseTime);
             RaiseArmByDegrees(98,100);
-            Strafe(-24,defaultDriveSpeed,1000);
-            Drive(22,defaultDriveSpeed,1000);
-            Turn(-90,defaultTurnSpeed,1000);
-            Drive(9,defaultDriveSpeed, 1000);
-            Strafe(-46,defaultDriveSpeed,1000);
-            Strafe(46,defaultDriveSpeed,1000);
-            Drive(10,defaultDriveSpeed,1000);
-            Strafe(-46,defaultDriveSpeed,1000);
+            Strafe(-24,defaultDriveSpeed,defaultPauseTime);
+            Drive(22,defaultDriveSpeed,defaultPauseTime);
+            Turn(-90,defaultTurnSpeed,defaultPauseTime);
+            Drive(9,defaultDriveSpeed, defaultPauseTime);
+            Strafe(-46,defaultDriveSpeed,defaultPauseTime);
+            Strafe(46,defaultDriveSpeed,defaultPauseTime);
+            Drive(10,defaultDriveSpeed,defaultPauseTime);
+            Strafe(-46,defaultDriveSpeed,defaultPauseTime);
 
             /************
              * Path End *

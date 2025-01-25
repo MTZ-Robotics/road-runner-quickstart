@@ -57,6 +57,7 @@ import static org.firstinspires.ftc.teamcode.MTZ.mtzConstants_ItD.wristConversio
 import static org.firstinspires.ftc.teamcode.MTZ.mtzConstants_ItD.yellowWarningTime;
 
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -68,7 +69,7 @@ import org.firstinspires.ftc.teamcode.MTZ.mtzConstants_ItD;
 
 @TeleOp(name="TeleMTZ_Drive_ArmTest", group ="Core")
 
-//@Disabled
+@Disabled
 
 /****
  * This class is intended to be a sub class to run the robot with the controllers.
