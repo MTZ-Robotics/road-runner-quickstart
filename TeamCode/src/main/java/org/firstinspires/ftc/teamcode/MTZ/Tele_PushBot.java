@@ -2,10 +2,11 @@ package org.firstinspires.ftc.teamcode.MTZ;
 
 import static org.firstinspires.ftc.teamcode.MTZ.mtzConstants_ItD.defaultDriveSpeed;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp(name="PushBot", group ="Test")
-//@Disabled
+@Disabled
 public class Tele_PushBot extends TeleMTZ_Drive_Controls_ItD {
     public void runOpMode() throws InterruptedException {
 

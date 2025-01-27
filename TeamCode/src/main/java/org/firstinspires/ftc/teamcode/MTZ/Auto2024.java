@@ -1,12 +1,13 @@
 package org.firstinspires.ftc.teamcode.MTZ;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.MTZ.AutoControlsMTZ;
 
 import java.io.IOException;
 
 @Autonomous(name="auto2024", group ="A_Top")
-//@Disabled
+@Disabled
 public class Auto2024 extends AutoControlsMTZ {
     public void runOpMode() throws InterruptedException {
         try {

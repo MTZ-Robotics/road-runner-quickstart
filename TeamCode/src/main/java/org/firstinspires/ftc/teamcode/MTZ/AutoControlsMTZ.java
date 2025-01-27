@@ -368,62 +368,23 @@ public class AutoControlsMTZ extends LinearOpMode {
              ***********/
         }
 
-        else if (pathToRun=="auto2024") {
+        else if (pathToRun =="auto2024v2" || pathToRun =="basketv2") {
 
             /******************************************************************
              *                           Path Branch 2024
              *****************************************************************/
 
-            Logging.log("Running Path Auto 2024");
+            Logging.log("Running Path: "+pathToRun);
+            allianceReverser=1;
+            if(pathToRun =="basketv2"){
+                allianceReverser=-1;
+            }
 
             /************************************
              * Path set up -- Add to each path
              ***********************************/
             //Robot Setup Notes
-            telemetry.log().add("Left side lines up center of field");
-            waitForStart();
-            /************
-             * Path Start
-             ************/
-
-            RaiseArmByDegrees(60,100);
-            Drive(16.5,defaultDriveSpeed,100);
-            RaiseArmByDegrees(-2,100);
-            rightClaw.setPosition(rightClawOpenPosition);
-            leftClaw.setPosition(leftClawOpenPosition);
-            Drive(-6,defaultDriveSpeed,100);
-            RaiseArmByDegrees(98,100);
-            Strafe(allianceReverser*24,defaultDriveSpeed,100);
-            Drive(30,defaultDriveSpeed,100);
-            Turn(allianceReverser*146,defaultTurnSpeed,100);
-            Drive(11,defaultDriveSpeed, 100);
-            Strafe(allianceReverser*42,defaultDriveSpeed,100);
-            Strafe(allianceReverser*-42,defaultDriveSpeed,100);
-            Drive(11,defaultDriveSpeed,100);
-            Strafe(allianceReverser*42,defaultDriveSpeed,100);
-            Strafe(allianceReverser*-42,defaultDriveSpeed,100);
-            Drive(12,defaultDriveSpeed,100);
-            Drive(3,defaultDriveSpeed/2.5,100);
-            Strafe(allianceReverser*48,defaultDriveSpeed,100);
-
-            /************
-             * Path End *
-             ***********/
-        }
-
-        else if (pathToRun =="auto2024v2") {
-
-            /******************************************************************
-             *                           Path Branch 2024
-             *****************************************************************/
-
-            Logging.log("Running Path Auto 2024 V2");
-
-            /************************************
-             * Path set up -- Add to each path
-             ***********************************/
-            //Robot Setup Notes
-            telemetry.log().add("Left side lines up center of field");
+            telemetry.log().add("Side lines up center of field");
             waitForStart();
             /************
              * Path Start
@@ -432,26 +393,32 @@ public class AutoControlsMTZ extends LinearOpMode {
             defaultPauseTime=100;
             RaiseArmByDegrees(85,100);
             ExtendArm(3,defaultArmExtensionPower, 100);
-            Drive(35, defaultDriveSpeed,defaultPauseTime);
-            RaiseArmByDegrees(60,0);
-            ExtendArm(1, defaultArmExtensionPower*2, 10);
+            Drive(35, defaultDriveSpeed/2,defaultPauseTime); //Forward to sub
+            RaiseArmByDegrees(60,0); //lower a little
+            ExtendArm(1, defaultArmExtensionPower*2, 10); //retract
             rightClaw.setPosition(rightClawOpenPosition);
             leftClaw.setPosition(leftClawOpenPosition);
             sleep(100);
-            Drive(-6,defaultDriveSpeed,defaultPauseTime);
+            Drive(-6,defaultDriveSpeed,defaultPauseTime); //Back away from the sub
             RaiseArmByDegrees(98,defaultPauseTime);
-            Strafe(22,defaultDriveSpeed,defaultPauseTime);
-            Drive(25,defaultDriveSpeed,defaultPauseTime);
-            Turn(90,defaultTurnSpeed,defaultPauseTime);
-            Drive(10,defaultDriveSpeed, defaultPauseTime);
-            Strafe(allianceReverser*42,defaultDriveSpeed,defaultPauseTime);
-            Strafe(allianceReverser*-42,defaultDriveSpeed,defaultPauseTime);
-            Drive(8,defaultDriveSpeed,defaultPauseTime);
-            Strafe(allianceReverser*42,defaultDriveSpeed,defaultPauseTime);
-            /*Strafe(allianceReverser*-42,defaultDriveSpeed,1000);
-            Drive(6,defaultDriveSpeed,1000);
-            Drive(2,defaultDriveSpeed/2.5,1000);
-            Strafe(allianceReverser*48,defaultDriveSpeed,1000);
+            if(pathToRun =="basketv2"){
+                Strafe(allianceReverser*27,defaultDriveSpeed,defaultPauseTime);
+            }
+            else {
+                Strafe(allianceReverser * 24, defaultDriveSpeed, defaultPauseTime); //Avoid the Sub
+            }
+            Drive(25,defaultDriveSpeed,defaultPauseTime); //Drive between sub support and Sample 1
+            Turn(allianceReverser*125,defaultTurnSpeed,defaultPauseTime);
+            Drive(10,defaultDriveSpeed, defaultPauseTime); //get behind Sample 1
+            Strafe(allianceReverser*48,defaultDriveSpeed,defaultPauseTime); //Bring sample to Obs Zone
+            Strafe(allianceReverser*-45,defaultDriveSpeed,defaultPauseTime); //Return to Samples
+            Drive(12,defaultDriveSpeed,defaultPauseTime); //get behind Sample 2
+            Strafe(allianceReverser*42,defaultDriveSpeed,defaultPauseTime); //Bring sample to Obs Zone
+            /*
+            Strafe(allianceReverser*-42,defaultDriveSpeed,1000); //Return to Samples
+            Drive(6,defaultDriveSpeed,1000); //get behind Sample 3
+            Drive(2,defaultDriveSpeed/2.5,1000);//push to wall
+            Strafe(allianceReverser*48,defaultDriveSpeed,1000);//Bring sample to Obs Zone
             */
 
             /************
@@ -460,141 +427,63 @@ public class AutoControlsMTZ extends LinearOpMode {
         }
 
 
-        else if (pathToRun=="auto2024v3") {
+        else if (pathToRun =="auto2024v3" || pathToRun =="basketv3") {
 
             /******************************************************************
              *                           Path Branch 2024
              *****************************************************************/
 
-            Logging.log("Running Path auto2024v3");
+            Logging.log("Running Path: "+pathToRun);
+            allianceReverser=1;
+            if(pathToRun =="basketv3"){
+                allianceReverser=-1;
+            }
 
             /************************************
              * Path set up -- Add to each path
              ***********************************/
             //Robot Setup Notes
-            telemetry.log().add("Left side lines up center of field");
+            telemetry.log().add("Side lines up center of field");
             waitForStart();
             /************
              * Path Start
              ************/
 
-            Drive(18,defaultDriveSpeed,1000);
-            Strafe(24,defaultDriveSpeed,1000);
-            Drive(22,defaultDriveSpeed,1000);
-            Turn(90,defaultTurnSpeed,1000);
-            Drive(9,defaultDriveSpeed, 1000);
-            Strafe(-46,defaultDriveSpeed,1000);
-            Strafe(12,defaultDriveSpeed,1000);
-            Turn(90,defaultTurnSpeed,1000);
-            sleep(1000);
-            rightClaw.setPosition(rightClawOpenPosition);
-            leftClaw.setPosition(leftClawOpenPosition);
-
-
-
-
-
-
-            /************
-             * Path End *
-             ***********/
-        }
-
-
-        else if (pathToRun =="basket") {
-
-            /******************************************************************
-             *                           Path Branch 2024
-             *****************************************************************/
-
-            Logging.log("Running Path Basket");
-
-            /************************************
-             * Path set up -- Add to each path
-             ***********************************/
-            //Robot Setup Notes
-            telemetry.log().add("Right side lines up center of field");
-            waitForStart();
-
-            /************
-             * Path Start
-             ************/
-
-            defaultPauseTime=1000;
-            //rightClaw.setPosition(rightClawClosedPosition);
-            //leftClaw.setPosition(leftClawClosedPosition);
-            //sleep(200);
-            RaiseArmByDegrees(85,1000);
-            ExtendArm(3, defaultArmExtensionPower*4, 1000);
-            Drive(24,defaultDriveSpeed,defaultPauseTime);
-            RaiseArmByDegrees(-2,1000);
-            ExtendArm(-.8, defaultArmExtensionPower, 1000);
-            rightClaw.setPosition(rightClawOpenPosition);
-            leftClaw.setPosition(leftClawOpenPosition);
-            Drive(-6,defaultDriveSpeed,defaultPauseTime);
-            RaiseArmByDegrees(98,defaultPauseTime);
-            Strafe(-24,defaultDriveSpeed,defaultPauseTime);
-            Drive(20,defaultDriveSpeed,defaultPauseTime);
-            Turn(-110,defaultTurnSpeed,defaultPauseTime);
-            RaiseArmByDegrees(10,defaultPauseTime);
-            Drive(10,defaultDriveSpeed,defaultPauseTime);
-            rightClaw.setPosition(rightClawClosedPosition);
-            leftClaw.setPosition(leftClawClosedPosition);
-            RaiseArmByDegrees(100,defaultPauseTime);
-            Strafe(-36,defaultDriveSpeed,defaultPauseTime);
-            Drive(10,defaultDriveSpeed,defaultPauseTime);
-            ExtendArm(50, defaultArmExtensionPower, defaultPauseTime);
-            rightClaw.setPosition(rightClawOpenPosition);
-            leftClaw.setPosition(leftClawOpenPosition);
-
-
-            /************
-             * Path End *
-             ***********/
-        }
-
-        else if (pathToRun =="basket2") {
-
-            /******************************************************************
-             *                           Path Branch 2024
-             *****************************************************************/
-
-            Logging.log("Running Path Basket 2");
-
-            /************************************
-             * Path set up -- Add to each path
-             ***********************************/
-            //Robot Setup Notes
-            telemetry.log().add("basket 2");
-            waitForStart();
-            /************
-             * Path Start
-             ************/
-            defaultPauseTime=1000;
-
-            RaiseArmByDegrees(85,1000);
-            ExtendArm(3,defaultArmExtensionPower, 1000);
-            Drive(23, defaultDriveSpeed,defaultPauseTime);
-            RaiseArmByDegrees(65,0);
-            ExtendArm(1, defaultArmExtensionPower*2, 1000);
+            defaultPauseTime=100;
+            RaiseArmByDegrees(85,100);
+            ExtendArm(3,defaultArmExtensionPower, 100);
+            sleep(7000);
+            Drive(35, defaultDriveSpeed,defaultPauseTime); //Forward to sub
+            RaiseArmByDegrees(60,0); //lower a little
+            ExtendArm(1, defaultArmExtensionPower*2, 10); //retract
             rightClaw.setPosition(rightClawOpenPosition);
             leftClaw.setPosition(leftClawOpenPosition);
             sleep(100);
-            Drive(-6,defaultDriveSpeed,defaultPauseTime);
-            RaiseArmByDegrees(98,100);
-            Strafe(-24,defaultDriveSpeed,defaultPauseTime);
-            Drive(22,defaultDriveSpeed,defaultPauseTime);
-            Turn(-90,defaultTurnSpeed,defaultPauseTime);
-            Drive(9,defaultDriveSpeed, defaultPauseTime);
-            Strafe(-46,defaultDriveSpeed,defaultPauseTime);
-            Strafe(46,defaultDriveSpeed,defaultPauseTime);
-            Drive(10,defaultDriveSpeed,defaultPauseTime);
-            Strafe(-46,defaultDriveSpeed,defaultPauseTime);
+            Drive(-6,defaultDriveSpeed,defaultPauseTime); //Back away from the sub
+            RaiseArmByDegrees(98,defaultPauseTime);
+            Strafe(allianceReverser*22,defaultDriveSpeed,defaultPauseTime); //Avoid the Sub
+            Drive(25,defaultDriveSpeed,defaultPauseTime); //Drive between sub support and Sample 1
+            Turn(allianceReverser*90,defaultTurnSpeed,defaultPauseTime);
+            Drive(10,defaultDriveSpeed, defaultPauseTime); //get behind Sample 1
+            Strafe(allianceReverser*42,defaultDriveSpeed,defaultPauseTime); //Bring sample to Obs Zone
+            /*
+            Strafe(allianceReverser*-42,defaultDriveSpeed,defaultPauseTime); //Return to Samples
+            Drive(8,defaultDriveSpeed,defaultPauseTime); //get behind Sample 2
+            Strafe(allianceReverser*42,defaultDriveSpeed,defaultPauseTime); //Bring sample to Obs Zone
+
+             */
+            /*
+            Strafe(allianceReverser*-42,defaultDriveSpeed,1000); //Return to Samples
+            Drive(6,defaultDriveSpeed,1000); //get behind Sample 3
+            Drive(2,defaultDriveSpeed/2.5,1000);//push to wall
+            Strafe(allianceReverser*48,defaultDriveSpeed,1000);//Bring sample to Obs Zone
+            */
 
             /************
              * Path End *
              ***********/
         }
+
 
         /*********************************************************************
          *                              Next Path

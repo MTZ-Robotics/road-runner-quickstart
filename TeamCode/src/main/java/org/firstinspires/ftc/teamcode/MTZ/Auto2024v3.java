@@ -1,15 +1,14 @@
 package org.firstinspires.ftc.teamcode.MTZ;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import java.io.IOException;
 
-@Autonomous(name="basketside", group ="A_Top")
-@Disabled
-public class Auto2024BasketSide extends AutoControlsMTZ {
+@Autonomous(name="auto2024v3", group ="A_Top")
+//@Disabled
+public class Auto2024v3 extends AutoControlsMTZ {
     public void runOpMode() throws InterruptedException {
         try {
-            super.autoPaths("Red","basket",true);
+            super.autoPaths("Red","auto2024v3",true);
         } catch (IOException e) {
             e.printStackTrace();
         }
