@@ -20,6 +20,7 @@ import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -28,7 +29,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
-
+@Disabled
 @Config
 @Autonomous(name = "Auto2024RrTest_24Jan2025_2", group = "Test")
 public class Auto2024RrTest_24Jan2025_2 extends LinearOpMode {
@@ -61,6 +62,28 @@ public class Auto2024RrTest_24Jan2025_2 extends LinearOpMode {
             arm.setDirection(DcMotorSimple.Direction.FORWARD);
         }
 
+        public class ArmToRail implements Action {
+            private boolean initialized = false;
+
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                if (!initialized) {
+                    arm.setPower(0.8);
+                    initialized = true;
+                }
+
+                double pos = arm.getCurrentPosition();
+                packet.put("armPos", pos);
+                if (pos < ticksToTopRail) {
+                    return true;
+                } else {
+                    arm.setPower(0);
+                    return false;
+                }
+            }
+
+        }
+
         /*
         public class ArmToRail implements Action {
             private boolean initialized = false;
@@ -87,27 +110,6 @@ public class Auto2024RrTest_24Jan2025_2 extends LinearOpMode {
         }
 
          */
-        public class ArmToRail implements Action {
-            private boolean initialized = false;
-
-            @Override
-            public boolean run(@NonNull TelemetryPacket packet) {
-                if (!initialized) {
-                    arm.setPower(0.8);
-                    initialized = true;
-                }
-
-                double pos = arm.getCurrentPosition();
-                packet.put("armPos", pos);
-                if (pos < ticksToTopRail) {
-                    return true;
-                } else {
-                    arm.setPower(0);
-                    return false;
-                }
-            }
-
-        }
         public class ArmToHuman implements Action {
             private boolean initialized = false;
 
@@ -411,9 +413,9 @@ public class Auto2024RrTest_24Jan2025_2 extends LinearOpMode {
                     //line up with sample 2
                     .strafeToConstantHeading(new Vector2d(neg*sample2X, sampleY))
                     //push sample 2
-                    .strafeToConstantHeading(new Vector2d(neg*sample2X, humanPlayerY))
+                    .splineToConstantHeading(new Vector2d(neg*sample2X, humanPlayerY), Math.toRadians(90))
 
-                    //.splineTo(new Vector2d(50, -57), Math.toRadians(180))
+                    .splineTo(new Vector2d(50, -57), Math.toRadians(180))
                     //return to samples
                     .strafeToConstantHeading(new Vector2d(neg*(sample3X-10), sampleY))
                     //line up with sample 3
@@ -426,9 +428,9 @@ public class Auto2024RrTest_24Jan2025_2 extends LinearOpMode {
                     //turn to grab block
                     .turnTo(Math.toRadians(270))
                     //go to submersible
-                    .splineTo(new Vector2d(6, -36), Math.toRadians(90));
-                    //go park now in Closeout
-                    //.strafeTo(new Vector2d(50, -65));
+                    .strafeTo(new Vector2d(6, -36))
+                    //go park
+                    .strafeTo(new Vector2d(50, -65));
 
         }
 
@@ -524,7 +526,7 @@ public class Auto2024RrTest_24Jan2025_2 extends LinearOpMode {
         }
         Action trajectoryActionCloseOut = tab1.endTrajectory().fresh()
                 //.strafeTo(new Vector2d(48, 12))
-                .strafeTo(new Vector2d(50, -65))
+                //.strafeTo(new Vector2d(50, -65))
                 .build();
 
         /************************

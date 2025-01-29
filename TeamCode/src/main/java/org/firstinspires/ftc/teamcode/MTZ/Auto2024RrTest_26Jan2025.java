@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.MTZ;
 
+import static org.firstinspires.ftc.teamcode.MTZ.mtzConstants_ItD.defaultArmExtensionPower;
+import static org.firstinspires.ftc.teamcode.MTZ.mtzConstants_ItD.defaultArmPower;
 import static org.firstinspires.ftc.teamcode.MTZ.mtzConstants_ItD.leftClawClosedPosition;
 import static org.firstinspires.ftc.teamcode.MTZ.mtzConstants_ItD.leftClawOpenPosition;
 import static org.firstinspires.ftc.teamcode.MTZ.mtzConstants_ItD.rightClawClosedPosition;
@@ -31,33 +33,55 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 @Disabled
 @Config
-@Autonomous(name = "Auto2024RrTest_23Jan2025", group = "Test")
-public class Auto2024RrTest_23Jan2025 extends LinearOpMode {
+@Autonomous(name = "Auto2024RrTest_26Jan2025", group = "Test")
+public class Auto2024RrTest_26Jan2025 extends LinearOpMode {
+    public static int ticksToTopRail = (int) ((int) 70.0*ticksPerDegreeArm);
+    public static int ticksToHumanPlayer = (int) ((int) 20.0*ticksPerDegreeArm);
+    public static int ticksToEjectArm = (int) ((int) 65*ticksPerDegreeArm);
+    public static int ticksToTheSkyArm = (int) ((int) 98*ticksPerDegreeArm);
+    public static int ticksToRailExtend = (int) ((int) 3.0 * ticksPerInchExtension);
+    public static int ticksToEjectExtend = (int) ((int) ticksToRailExtend - (2.0 * ticksPerInchExtension));
+    public static double startX=9.5;
+    public static double startY=-66;
+    public static double deliverRailX=6;
+    public static double deliverRailY=-34;
+    public static double avoidSubX=37;
+    public static double avoidSubY=-40;
+    public static double sampleY=-18;
+    public static double sample1X=47;
+    public static double sample2X=53;
+    public static double sample3X=63;
+    public static double humanPlayerY=-57;
+    public static double humanPlayerX=50;
+    public static double parkX=50;
+    public static double parkY=-65;
+    public static int defaultPathToRun = 1;
+
+
     public class Arm {
         private DcMotorEx arm;
-        public int ticksToTopRail = (int) ((int) 90.0*ticksPerDegreeArm);
-        public int ticksToHumanPlayer = (int) ((int) 40.0*ticksPerDegreeArm);
-        public int ticksToEjectArm = (int) ((int) 65*ticksPerDegreeArm);
-                public Arm(HardwareMap hardwareMap) {
+
+        public Arm(HardwareMap hardwareMap) {
             //todo: fix the name of the arm motor and uncomment the hardwareMap line
             arm = hardwareMap.get(DcMotorEx.class, "arm");
             arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             arm.setDirection(DcMotorSimple.Direction.FORWARD);
         }
-
         public class ArmToRail implements Action {
             private boolean initialized = false;
 
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 if (!initialized) {
-                    arm.setPower(0.8);
+                    arm.setTargetPosition(ticksToTopRail);
+                    arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    arm.setPower(defaultArmPower);
                     initialized = true;
                 }
 
                 double pos = arm.getCurrentPosition();
                 packet.put("armPos", pos);
-                if (pos < ticksToTopRail) {
+                if (arm.isBusy()) {
                     return true;
                 } else {
                     arm.setPower(0);
@@ -68,17 +92,17 @@ public class Auto2024RrTest_23Jan2025 extends LinearOpMode {
         }
         public class ArmToHuman implements Action {
             private boolean initialized = false;
-
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 if (!initialized) {
-                    arm.setPower(-0.8);
+                    arm.setTargetPosition(ticksToHumanPlayer);
+                    arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    arm.setPower(defaultArmPower);
                     initialized = true;
                 }
-
                 double pos = arm.getCurrentPosition();
                 packet.put("armPos", pos);
-                if (pos < ticksToHumanPlayer) {
+                if (arm.isBusy()) {
                     return true;
                 } else {
                     arm.setPower(0);
@@ -89,17 +113,17 @@ public class Auto2024RrTest_23Jan2025 extends LinearOpMode {
         }
         public class ArmToEject implements Action {
             private boolean initialized = false;
-
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 if (!initialized) {
-                    arm.setPower(-0.8);
+                    arm.setTargetPosition(ticksToEjectArm);
+                    arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    arm.setPower(defaultArmPower);
                     initialized = true;
                 }
-
                 double pos = arm.getCurrentPosition();
                 packet.put("armPos", pos);
-                if (pos < ticksToEjectArm) {
+                if (arm.isBusy()) {
                     return true;
                 } else {
                     arm.setPower(0);
@@ -108,29 +132,42 @@ public class Auto2024RrTest_23Jan2025 extends LinearOpMode {
             }
 
         }
-        public Action armToRail() {
-            return new ArmToRail();
-        }
-        public Action armToHuman() {
-            return new ArmToHuman();
-        }
-        public Action armToEject() {
-            return new ArmToEject();
-        }
+        public class ArmToTheSky implements Action {
+            private boolean initialized = false;
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                if (!initialized) {
+                    arm.setTargetPosition(ticksToTheSkyArm);
+                    arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    arm.setPower(defaultArmPower);
+                    initialized = true;
+                }
+                double pos = arm.getCurrentPosition();
+                packet.put("armPos", pos);
+                if (arm.isBusy()) {
+                    return true;
+                } else {
+                    arm.setPower(0);
+                    return false;
+                }
+            }
 
+        }
         public class ArmDown implements Action {
             private boolean initialized = false;
 
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 if (!initialized) {
-                    arm.setPower(-0.8);
+                    arm.setTargetPosition(0);
+                    arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    arm.setPower(defaultArmPower);
                     initialized = true;
                 }
 
                 double pos = arm.getCurrentPosition();
                 packet.put("armPos", pos);
-                if (pos > 0) {
+                if (arm.isBusy()) {
                     return true;
                 } else {
                     arm.setPower(0);
@@ -138,35 +175,37 @@ public class Auto2024RrTest_23Jan2025 extends LinearOpMode {
                 }
             }
         }
-        public Action armDown(){
-            return new ArmDown();
-        }
+
+        public Action armToRail() {return new ArmToRail();}
+        public Action armToHuman() {return new ArmToHuman();}
+        public Action armToEject() {return new ArmToEject();}
+        public Action armToTheSky() {return new ArmToTheSky();}
+        public Action armDown(){return new ArmDown();}
     }
 
     public class Extend {
         private DcMotorEx extend;
-        public int ticksToRail = (int) ((int) 3.0*ticksPerInchExtension);
-        public int ticksToEject = (int) ((int) ticksToRail-(2.0*ticksPerInchExtension));
         public Extend(HardwareMap hardwareMap) {
             //todo: fix the name of the extend motor and uncomment the hardwareMap line
             extend = hardwareMap.get(DcMotorEx.class, "armExtension");
             extend.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             extend.setDirection(DcMotorSimple.Direction.FORWARD);
         }
-
         public class ExtendToRail implements Action {
             private boolean initialized = false;
 
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 if (!initialized) {
-                    extend.setPower(0.8);
+                    extend.setTargetPosition(ticksToRailExtend);
+                    extend.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    extend.setPower(defaultArmExtensionPower);
                     initialized = true;
                 }
 
                 double pos = extend.getCurrentPosition();
-                packet.put("extendPos", pos);
-                if (pos < ticksToRail) {
+                packet.put("ejectPos", pos);
+                if (extend.isBusy()) {
                     return true;
                 } else {
                     extend.setPower(0);
@@ -181,13 +220,15 @@ public class Auto2024RrTest_23Jan2025 extends LinearOpMode {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 if (!initialized) {
-                    extend.setPower(-0.8);
+                    extend.setTargetPosition(ticksToEjectExtend);
+                    extend.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    extend.setPower(defaultArmExtensionPower);
                     initialized = true;
                 }
 
                 double pos = extend.getCurrentPosition();
-                packet.put("extendPos", pos);
-                if (pos < ticksToEject) {
+                packet.put("ejectPos", pos);
+                if (extend.isBusy()) {
                     return true;
                 } else {
                     extend.setPower(0);
@@ -196,26 +237,21 @@ public class Auto2024RrTest_23Jan2025 extends LinearOpMode {
             }
 
         }
-        public Action extendToRail() {
-            return new ExtendToRail();
-        }
-        public Action extendToEject() {
-            return new ExtendToEject();
-        }
-
         public class ExtendRetract implements Action {
             private boolean initialized = false;
 
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 if (!initialized) {
-                    extend.setPower(-0.8);
+                    extend.setTargetPosition(0);
+                    extend.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    extend.setPower(defaultArmExtensionPower);
                     initialized = true;
                 }
 
                 double pos = extend.getCurrentPosition();
-                packet.put("extendPos", pos);
-                if (pos > 0) {
+                packet.put("ejectPos", pos);
+                if (extend.isBusy()) {
                     return true;
                 } else {
                     extend.setPower(0);
@@ -223,10 +259,12 @@ public class Auto2024RrTest_23Jan2025 extends LinearOpMode {
                 }
             }
         }
-        public Action extendRetract(){
-            return new ExtendRetract();
-        }
+        public Action extendToRail() {return new ExtendToRail();}
+        public Action extendToEject() {return new ExtendToEject();}
+        public Action extendRetract() {return new ExtendRetract();}
     }
+
+
     public class Claw {
         private Servo leftClaw;
         private Servo rightClaw;
@@ -245,10 +283,6 @@ public class Auto2024RrTest_23Jan2025 extends LinearOpMode {
                 return false;
             }
         }
-        public Action closeClaw() {
-            return new CloseClaw();
-        }
-
         public class OpenClaw implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
@@ -257,11 +291,9 @@ public class Auto2024RrTest_23Jan2025 extends LinearOpMode {
                 return false;
             }
         }
-        public Action openClaw() {
-            return new OpenClaw();
-        }
+        public Action openClaw() {return new OpenClaw();}
+        public Action closeClaw() {return new CloseClaw();}
     }
-    int defaultPathToRun = 1;
     int minPathChoice = 1;
     int maxPathChoice = 3;
 
@@ -276,16 +308,16 @@ public class Auto2024RrTest_23Jan2025 extends LinearOpMode {
         //Pose2d deliverPose;
 
         if(pathToRun==1) {
-            initialPose = new Pose2d(9, -66, Math.toRadians(90));
+            initialPose = new Pose2d(startX, startY, Math.toRadians(90));
         } else if (pathToRun==2){
-            initialPose = new Pose2d(-9, -66, Math.toRadians(90));
+            initialPose = new Pose2d(-startX, startY, Math.toRadians(90));
         } else {
-            initialPose = new Pose2d(9, -66, Math.toRadians(90));
+            initialPose = new Pose2d(startX, startY, Math.toRadians(90));
         }
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
 
         // TODO: uncomment the hardwareMap lines when using arm and claw
- 
+
         Claw claw = new Claw(hardwareMap);
         Arm arm = new Arm(hardwareMap);
         Extend extend = new Extend(hardwareMap);
@@ -301,7 +333,7 @@ public class Auto2024RrTest_23Jan2025 extends LinearOpMode {
         TrajectoryActionBuilder tab1;
         TrajectoryActionBuilder tab2 = null;
         TrajectoryActionBuilder tab3 = null;
-        //TrajectoryActionBuilder tabDeliver;
+        TrajectoryActionBuilder tabClose = null;
 
         /******************************************************
          *
@@ -315,60 +347,72 @@ public class Auto2024RrTest_23Jan2025 extends LinearOpMode {
          *
          * 11111111111111111111111111111111
          *
-         * Push Bot Turning Specimen Side
+         * Push Bot Specimen Side
          *
          * 11111111111111111111111111111111
          *
          ************************************/
-        if (pathToRun==1) {
 
-            initialPose = new Pose2d(9.5, -66, Math.toRadians(90));
+        int neg=1; //This variable can be set to negative 1 to reverse the directions and distances
+
+        if (pathToRun==1 || pathToRun==2) {
+            neg=1;
+            if (pathToRun == 2) {
+                neg=1;
+            }
+
+            initialPose = new Pose2d(neg*startX, startY, Math.toRadians(90));
 
             tab1 = drive.actionBuilder(initialPose)
                     //Move to submersible
-                    .waitSeconds(1)
-                    .splineToSplineHeading(new Pose2d(6, -36, Math.toRadians(90)), Math.toRadians(90));
+                    //.splineToSplineHeading(new Pose2d(neg*deliverRailX, deliverRailY, Math.toRadians(90)), Math.toRadians(90))
+                    .splineToSplineHeading(new Pose2d(neg*deliverRailX, deliverRailY, Math.toRadians(90)), Math.toRadians(90));
+                    //.strafeTo(new Vector2d(neg*deliverRailX, deliverRailY));
                     //drop off specimen
-
 
             tab2 = tab1.endTrajectory().fresh()
                     //.waitSeconds(1)
                     //back away form the submersible
                     //Move around brace of submersible
                     //.splineToConstantHeading(new Vector2d(11.7, -37.2),Math.toRadians(90))
-                    .strafeToConstantHeading(new Vector2d(11.7, -40))
+                    .strafeToConstantHeading(new Vector2d(neg*(deliverRailX+4), avoidSubY))
                     //avoid submersible
-                    .strafeTo(new Vector2d(37, -40))
+                    .strafeTo(new Vector2d(neg*avoidSubX, avoidSubY))
                     .turnTo(Math.toRadians(270))
                     //move to beyond sample 1
-                    .strafeToConstantHeading(new Vector2d(37, -18))
+                    .strafeToConstantHeading(new Vector2d(neg*(sample1X-10), sampleY))
                     //line up with sample 1
-                    .strafeToConstantHeading(new Vector2d(47, -18))
+                    .strafeToConstantHeading(new Vector2d(neg*sample1X, sampleY))
                     //push sample 1
-                    .strafeToConstantHeading(new Vector2d(47, -57))
+                    .strafeToConstantHeading(new Vector2d(neg*sample1X, humanPlayerY))
                     //return to samples
-                    .strafeToConstantHeading(new Vector2d(48, -18))
+                    .strafeToConstantHeading(new Vector2d(neg*(sample2X-10), sampleY))
                     //line up with sample 2
-                    .strafeToConstantHeading(new Vector2d(50, -18))
+                    .strafeToConstantHeading(new Vector2d(neg*sample2X, sampleY))
                     //push sample 2
-                    .splineToConstantHeading(new Vector2d(50, -57), Math.toRadians(90))
-
+                    .splineToConstantHeading(new Vector2d(neg*sample2X, humanPlayerY), Math.toRadians(90))
+                            //.strafeToConstantHeading(new Vector2d(neg*sample2X, humanPlayerY))
                     .splineTo(new Vector2d(50, -57), Math.toRadians(180))
                     //return to samples
-                    .strafeToConstantHeading(new Vector2d(52, -18))
+                    .strafeToConstantHeading(new Vector2d(neg*(sample3X-10), sampleY))
                     //line up with sample 3
-                    .strafeToConstantHeading(new Vector2d(63, -18))
+                    .strafeToConstantHeading(new Vector2d(neg*sample3X, sampleY))
                     //push sample 3
-                    .strafeToConstantHeading(new Vector2d(63, -57));
-                    //.waitSeconds(3);
+                    .strafeToConstantHeading(new Vector2d(neg*sample3X, humanPlayerY))
+
+                    .turnTo(Math.toRadians(270)); //turn to grab block
+                    //Move to grab specimen
+
 
             tab3 = tab2.endTrajectory().fresh()
-                    //turn to grab block
-                    .turnTo(Math.toRadians(270))
                     //go to submersible
-                    .strafeTo(new Vector2d(6, -36))
-                    //go park
-                    .strafeTo(new Vector2d(50, -65));
+                    .strafeTo(new Vector2d(6, -36));
+                    //.splineTo(new Vector2d(neg*(deliverRailX-4), deliverRailY), Math.toRadians(90));
+                    //go park now in Closeout
+
+            tabClose = tab3.endTrajectory().fresh()
+                    //.strafeTo(new Vector2d(48, 12))
+                    .strafeTo(new Vector2d(neg*parkX, parkY));
 
         }
 
@@ -378,18 +422,18 @@ public class Auto2024RrTest_23Jan2025 extends LinearOpMode {
 
         /*********************
          *
-         * 2222222222222222222222222
+         *
          *
          * Push Bot Spline Net Side
          *
-         * 222222222222222222222222
+         *
          *
          *********************/
 
 
 
 
-        else if (pathToRun==2) {
+        else if (pathToRun==3) {
             initialPose = new Pose2d(-9, -66, Math.toRadians(90));
             tab1 = drive.actionBuilder(initialPose)
 
@@ -462,9 +506,9 @@ public class Auto2024RrTest_23Jan2025 extends LinearOpMode {
                     .strafeToConstantHeading(new Vector2d(55, -55))
                     .waitSeconds(3);
         }
-        Action trajectoryActionCloseOut = tab1.endTrajectory().fresh()
+        tabClose = tab1.endTrajectory().fresh()
                 //.strafeTo(new Vector2d(48, 12))
-                .build();
+                .strafeTo(new Vector2d(50, -65));
 
         /************************
          *
@@ -474,7 +518,7 @@ public class Auto2024RrTest_23Jan2025 extends LinearOpMode {
         // actions that need to happen on init; for instance, a claw tightening.
         Actions.runBlocking(claw.closeClaw());
 
-
+/*
         while (!isStopRequested() && !opModeIsActive()) {
             //int startPosition = visionOutputPosition;
             pathChoiceUp.update(gamepad1.dpad_up);
@@ -494,7 +538,7 @@ public class Auto2024RrTest_23Jan2025 extends LinearOpMode {
             telemetry.addData("Path to run: ", pathToRun);
             telemetry.update();
         }
-
+*/
 
         waitForStart();
 
@@ -503,13 +547,14 @@ public class Auto2024RrTest_23Jan2025 extends LinearOpMode {
         Action trajectoryAction1;
         Action trajectoryAction2;
         Action trajectoryAction3;
+        Action trajectoryActionCloseOut;
 
 
         Action squeezeClaw = new SequentialAction(
                 claw.closeClaw(),
                 new SleepAction(1) //wait for claw to move
         );
-        Action secureSpecimen = new SequentialAction(
+        Action clipSpecimen = new SequentialAction(
                 extend.extendToEject(), //pull down
                 arm.armToEject(), //pull down
                 claw.openClaw(),//let go
@@ -522,6 +567,7 @@ public class Auto2024RrTest_23Jan2025 extends LinearOpMode {
         assert tab2 != null;
         trajectoryAction2 = tab2.build();
         trajectoryAction3 = tab3.build();
+        trajectoryActionCloseOut = tabClose.build();
 
         Actions.runBlocking(
                 new SequentialAction(
@@ -531,23 +577,25 @@ public class Auto2024RrTest_23Jan2025 extends LinearOpMode {
                                 extend.extendToRail(),
                                 trajectoryAction1
                         ),
-                        secureSpecimen,
+                        clipSpecimen,
                         new ParallelAction( //Move to human player
                                 trajectoryAction2,
                                 extend.extendToRail(),
-                                arm.armToHuman()
+                                arm.armToTheSky()
                         ),
+                        arm.armToHuman(),
                         squeezeClaw,
                         new ParallelAction( //Move to Submersible
                                 trajectoryAction3,
                                 arm.armToRail()
                         ),
-                        secureSpecimen,
-                        new ParallelAction(
-                                arm.armDown(),
+                        clipSpecimen,
+                        new ParallelAction( //Park
+                                arm.armToHuman(),
                                 extend.extendRetract(),
                                 trajectoryActionCloseOut
-                        )
+                        ),
+                        arm.armDown()
                 )
         );
     }

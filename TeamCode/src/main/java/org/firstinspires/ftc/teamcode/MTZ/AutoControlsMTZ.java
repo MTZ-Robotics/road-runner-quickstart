@@ -15,6 +15,7 @@ import static org.firstinspires.ftc.teamcode.MTZ.mtzConstants_ItD.ticksPerInchWh
 import static org.firstinspires.ftc.teamcode.MTZ.mtzConstants_ItD.ticksPerInchWheelStrafe;
 import static org.firstinspires.ftc.teamcode.MTZ.mtzConstants_ItD.ticksPerRevolution1150;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -39,7 +40,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
-
+@Config
 @Autonomous(name ="Auto Controls", group = "Bottom")
 //@Disabled
 

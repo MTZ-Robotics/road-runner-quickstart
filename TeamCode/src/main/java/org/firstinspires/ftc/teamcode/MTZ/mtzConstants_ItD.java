@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.MTZ;
 
+import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.hardware.configuration.ExpansionHubMotorControllerPositionParams;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
@@ -19,6 +21,7 @@ import java.util.List;
  * v302 Added wrist adjustment
  *
  ***********************************************/
+@Config
 public class mtzConstants_ItD {
 // Adjustments for efficiency
     public static final double driveEfficiency = .868;

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.MTZ;
 
+import static org.firstinspires.ftc.teamcode.MTZ.mtzConstants_ItD.defaultArmPower;
 import static org.firstinspires.ftc.teamcode.MTZ.mtzConstants_ItD.leftClawClosedPosition;
 import static org.firstinspires.ftc.teamcode.MTZ.mtzConstants_ItD.leftClawOpenPosition;
 import static org.firstinspires.ftc.teamcode.MTZ.mtzConstants_ItD.rightClawClosedPosition;
@@ -68,7 +69,7 @@ public class Auto2024RrTest extends LinearOpMode {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 if (!initialized) {
-                    lift.setPower(0.8);
+                    lift.setPower(defaultArmPower);
                     initialized = true;
                 }
 
