@@ -36,6 +36,7 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 public class Auto2024RrTest_27Jan2025 extends LinearOpMode {
 
     public static double degreesToTopRail = 70.0;
+    public static double degreesToPlaceSpecimen = 60.0;
     public static double degreesToHumanPlayer = 70.0;
     public static double degreesToEjectArm = 65.0;
     public static double degreesToTheSkyArm = 98.0;
@@ -49,13 +50,13 @@ public class Auto2024RrTest_27Jan2025 extends LinearOpMode {
     public static int ticksToEjectExtend = (int) ((int) inchesToEjectExtend * ticksPerInchExtension);
     public static double startX=9.5;
     public static double startY=-66;
-    public static double deliverRailX=6;
-    public static double deliverRailY=-34;
+    public static double deliverRailX=3;
+    public static double deliverRailY=-38;
     public static double avoidSubX=37;
     public static double avoidSubY=-40;
     public static double sampleY=-18;
     public static double sample1X=47;
-    public static double sample2X=53;
+    public static double sample2X=60;
     public static double sample3X=63;
     public static double humanPlayerY=-57;
     public static double humanPlayerX=50;
@@ -99,7 +100,7 @@ public class Auto2024RrTest_27Jan2025 extends LinearOpMode {
                 if (!initialized) {
                     armMotor.setTargetPosition(ticksToTopRail);
                     armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    armMotor.setPower(defaultArmPower);
+                    armMotor.setPower(defaultArmPower/2);
                     initialized = true;
                 }
 
@@ -458,7 +459,7 @@ public class Auto2024RrTest_27Jan2025 extends LinearOpMode {
                     //line up with sample 2
                     .strafeToConstantHeading(new Vector2d(neg*sample2X, sampleY))
                     //push sample 2
-                    .splineToConstantHeading(new Vector2d(neg*sample2X, humanPlayerY), Math.toRadians(90))
+                    .strafeToConstantHeading(new Vector2d(neg*sample2X, humanPlayerY))
                             //.strafeToConstantHeading(new Vector2d(neg*sample2X, humanPlayerY))
                     .splineTo(new Vector2d(50, -57), Math.toRadians(180));
 
@@ -506,24 +507,24 @@ public class Auto2024RrTest_27Jan2025 extends LinearOpMode {
          *    Initialize Op Mode
          *
          ************************/
-        /*// actions that need to happen on init; for instance, a claw tightening.
+        // actions that need to happen on init; for instance, a claw tightening.
         Actions.runBlocking(
                 new SequentialAction(
-                        documentation.reportVersion(),
+                        //documentation.reportVersion(),
                         armRotate.armReset(),
-                        armExtend.extendReset(),
-                        claw.closeClaw(),
-                        new SleepAction(1), //wait for claw to move
-
-
-
-                        claw.openClaw(),
-                        new SleepAction(1), //wait for claw to move
+                        //armExtend.extendReset(),
                         claw.closeClaw()
+                        //new SleepAction(1), //wait for claw to move
+
+
+
+                        //claw.openClaw(),
+                        //new SleepAction(1), //wait for claw to move
+                        //claw.closeClaw()
                 )
         );
 
-         */
+
 
         waitForStart();
 
@@ -541,7 +542,8 @@ public class Auto2024RrTest_27Jan2025 extends LinearOpMode {
         );
         Action clipSpecimen = new SequentialAction(
                 armExtend.extendToEject(), //pull down
-                armRotate.armToEject(), //pull down
+                //armRotate.armToEject(), //pull down
+                armRotate.armToHuman(),
                 claw.openClaw(),//let go
                 new SleepAction(1) //wait for claw to move
         );
