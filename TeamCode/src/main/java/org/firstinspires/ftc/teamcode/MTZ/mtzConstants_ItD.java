@@ -113,24 +113,20 @@ public static final int defaultPauseTime = 100;  //Milliseconds after a command
     public static double leftClawOpenPosition = 0;
     public static double leftClawClosedPosition = .4;
 
+    public static double handRotatorNormalPosition = .4;
+    public static double handRotatorLeftPosition = .1;
+    public static double handRotatorRightPosition = .8;
+
 
 
     public static final double launcherSetPosition = 0.0;
     public static final double launcherReleasePosition = 1.0;
-    public static final double leftHookUpPosition = 0.5;
-    public static final double rightHookUpPosition = 0.5;
-    public static final double leftHookDownPosition = 0;
-    public static final double rightHookDownPosition = 0;
-    public static final double leftHookInPosition = 1.0;
-    public static final double rightHookInPosition = 1.0;
     public static final int handAssistRideHeightLevel = 5;
     public static final int handAssistRideHeightDistance = 1;
     public static final boolean handAssistRideHeightAboveLevel = true;
     public static final int handAssistHangHeightLevel = 5;
     public static final int handAssistHangHeightDistance = 1;
     public static final boolean handAssistHangHeightAboveLevel = true;
-
-    public static int sampleDetectionPosition = 2;
 
 // Robot Configuration
 
@@ -181,7 +177,6 @@ public static final int defaultPauseTime = 100;  //Milliseconds after a command
 
     public static final double ticksPerDegreeArm = armRotationEfficiency * (ticksPerRevolution1150 /360 ) * gearReductionArm;
     public static final double ticksPerInchExtension = armExtensionEfficiency * ticksPerRevolution1150 * gearReductionExtensionSpur / translationInchPerRotationExtensionScrew;
-    //public static final double ticksPerInchExtension = armExtensionEfficiency * ticksPerRevolution84 * gearReductionExtensionSpur / translationInchPerRotationExtensionScrew;
 
 
     //conversion methods

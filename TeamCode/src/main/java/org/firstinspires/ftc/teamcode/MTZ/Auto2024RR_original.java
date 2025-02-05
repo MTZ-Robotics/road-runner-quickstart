@@ -18,13 +18,9 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-
-import org.firstinspires.ftc.teamcode.MTZ.mtzButtonBehavior.*;
-import org.firstinspires.ftc.teamcode.MTZ.mtzConstants_ItD.*;
-
 @Config
 @Autonomous(name = "Auto2024RR", group = "Test")
-public class Auto2024RR extends LinearOpMode {
+public class Auto2024RR_original extends LinearOpMode {
     public class Lift {
         private DcMotorEx lift;
 

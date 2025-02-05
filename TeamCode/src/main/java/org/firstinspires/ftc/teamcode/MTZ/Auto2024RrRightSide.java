@@ -3,8 +3,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 @Autonomous(name="RR Right Side Spline", group ="A_Top")
 //@Disabled
-public class Auto2024RrRightSide extends Auto2024RrTest {
+public class Auto2024RrRightSide extends Auto2024Rr {
     public void runOpMode() {
-            super.autonomousPathRunner(3);
+            super.autonomousPathRunner(1);
     }
 }

@@ -14,7 +14,6 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
-import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.SleepAction;
@@ -32,8 +31,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 @Config
-@Autonomous(name = "Auto2024RrTest_27Jan2025", group = "Test")
-public class Auto2024RrTest_27Jan2025 extends LinearOpMode {
+@Autonomous(name = "Auto2024Rr04Feb ", group = "Test")
+public class Auto2024RrTest_04Feb2025 extends LinearOpMode {
 
     public static double degreesToTopRail = 81.0;
     public static double degreesToPlaceSpecimen = 60.0;
@@ -541,11 +540,13 @@ public class Auto2024RrTest_27Jan2025 extends LinearOpMode {
                 new SleepAction(1) //wait for claw to move
         );
         Action clipSpecimen = new SequentialAction(
-                armExtend.extendToEject(), //pull down
+                //armExtend.extendToEject(), //pull down
                 //armRotate.armToEject(), //pull down
-                claw.openClaw(),
+                //claw.openClaw(),
                 armRotate.armToEject(),
-                armRotate.armToEject()
+                armRotate.armToEject(),
+                armExtend.extendToEject(),
+                claw.openClaw()
                 //claw.openClaw()//let go
               //  new SleepAction(1) //wait for claw to move
         );

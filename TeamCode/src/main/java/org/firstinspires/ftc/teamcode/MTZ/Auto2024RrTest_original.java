@@ -28,11 +28,9 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
-import java.io.IOException;
-
 @Config
 @Autonomous(name = "Auto2024RrTest", group = "Test")
-public class Auto2024RrTest extends LinearOpMode {
+public class Auto2024RrTest_original extends LinearOpMode {
     public class Lift {
         private DcMotorEx lift;
 
