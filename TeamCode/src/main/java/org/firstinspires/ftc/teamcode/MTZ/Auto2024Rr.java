@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.MTZ;
 
 import static org.firstinspires.ftc.teamcode.MTZ.mtzConstants_ItD.defaultArmExtensionPower;
 import static org.firstinspires.ftc.teamcode.MTZ.mtzConstants_ItD.defaultArmPower;
-import static org.firstinspires.ftc.teamcode.MTZ.mtzConstants_ItD.earlyDelayPauseTime;
 import static org.firstinspires.ftc.teamcode.MTZ.mtzConstants_ItD.leftClawClosedPosition;
 import static org.firstinspires.ftc.teamcode.MTZ.mtzConstants_ItD.leftClawOpenPosition;
 import static org.firstinspires.ftc.teamcode.MTZ.mtzConstants_ItD.rightClawClosedPosition;
@@ -35,12 +34,12 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 @Autonomous(name = "Auto2024Rr", group = "Test")
 public class Auto2024Rr extends LinearOpMode {
 
-    public static double degreesToTopRail = 70.0;
+    public static double degreesToTopRail = 81.0;
     public static double degreesToPlaceSpecimen = 60.0;
-    public static double degreesToHumanPlayer = 70.0;
-    public static double degreesToEjectArm = 65.0;
+    public static double degreesToHumanPlayer = 30.0;
+    public static double degreesToEjectArm = 50.0;
     public static double degreesToTheSkyArm = 98.0;
-    public static double inchesToTopRailExtend = 3.0;
+    public static double inchesToTopRailExtend = 3.75;
     public static double inchesToEjectExtend = 1.0;
     public static int ticksToTopRail = (int) ((int) degreesToTopRail*ticksPerDegreeArm);
     public static int ticksToHumanPlayer = (int) ((int) degreesToHumanPlayer*ticksPerDegreeArm);
@@ -51,7 +50,7 @@ public class Auto2024Rr extends LinearOpMode {
     public static double startX=9.5;
     public static double startY=-66;
     public static double deliverRailX=3;
-    public static double deliverRailY=-38;
+    public static double deliverRailY=-39;
     public static double avoidSubX=37;
     public static double avoidSubY=-40;
     public static double sampleY=-18;
@@ -488,7 +487,7 @@ public class Auto2024Rr extends LinearOpMode {
         else {
             initialPose = new Pose2d(9, -66, Math.toRadians(90));
             tab1 = drive.actionBuilder(initialPose)
-                    .waitSeconds(earlyDelayPauseTime/1000)
+                    .waitSeconds(10)
                     .splineToSplineHeading(new Pose2d(neg*deliverRailX, deliverRailY, Math.toRadians(90)), Math.toRadians(90));//Move to submersible
             tab2 = tab1.endTrajectory().fresh()
                     .strafeToConstantHeading(new Vector2d(neg*(deliverRailX+4), avoidSubY))//Back Away
@@ -541,11 +540,15 @@ public class Auto2024Rr extends LinearOpMode {
                 new SleepAction(1) //wait for claw to move
         );
         Action clipSpecimen = new SequentialAction(
-                armExtend.extendToEject(), //pull down
+                //armExtend.extendToEject(), //pull down
                 //armRotate.armToEject(), //pull down
-                armRotate.armToHuman(),
-                claw.openClaw(),//let go
-                new SleepAction(1) //wait for claw to move
+                //claw.openClaw(),
+                armRotate.armToEject(),
+                armRotate.armToEject(),
+                armExtend.extendToEject(),
+                claw.openClaw()
+                //claw.openClaw()//let go
+              //  new SleepAction(1) //wait for claw to move
         );
 
         trajectoryAction1 = tab1.build();
@@ -599,6 +602,8 @@ public class Auto2024Rr extends LinearOpMode {
                         armRotate.armToHuman(),
                          //Move to Submersible
                         armExtend.extendToRail(),
+                        armExtend.extendToRail(),
+                        armRotate.armToRail(),
                         armRotate.armToRail(),
                         trajectoryAction1,
 
@@ -618,8 +623,9 @@ public class Auto2024Rr extends LinearOpMode {
                         //Park
                         armRotate.armToHuman(),
                         armExtend.extendRetract(),
+                        armExtend.extendRetract(),
                         trajectoryActionCloseOut,
-
+                        armRotate.armDown(),
                         armRotate.armDown()
                 )
         );
